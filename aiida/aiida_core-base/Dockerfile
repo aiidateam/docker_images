@@ -1,0 +1,82 @@
+FROM phusion/baseimage:0.9.19
+MAINTAINER AiiDA Team <info@aiida.net>
+
+# Set correct environment variables.
+ENV HOME /root
+
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
+
+# TODO: probably postgresql-server-dev-9.5 are needed only during
+# the pip install phase, so could be removed afterwards (and maybe
+# used in the same layer)
+
+# install required software
+RUN apt-get update \
+    && apt-get -y install \
+    git \
+    openssh-client \
+    postgresql-client-9.5 \
+    postgresql-server-dev-9.5 \
+    python2.7 \
+    && apt-get -y install \
+    python-pip \
+    ipython \
+    python2.7-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean all
+
+# update pip and setuptools, required for AiiDA
+RUN pip install -U pip setuptools
+
+# add USER (no password)
+RUN useradd -m -s /bin/bash aiida
+
+##########################################
+############ Installation Setup ##########
+##########################################
+
+# install rest of the packages as normal user
+USER aiida
+
+# set $HOME, create git directory
+ENV HOME /home/aiida
+
+RUN mkdir -p $HOME/code/
+WORKDIR /home/aiida/code
+
+## Get the 'develop' branch with git
+RUN git clone https://github.com/aiidateam/aiida_core.git && \
+    cd aiida_core && \
+    git checkout develop && \
+    cd ..
+
+## Alternatively, use wget
+#RUN wget --no-check-certificate -q \
+#      https://github.com/aiidateam/aiida_core/archive/develop.tar.gz && \
+#    tar xzf develop.tar.gz && \
+#    rm develop.tar.gz && \
+#    mv aiida_core-develop aiida_core
+
+WORKDIR /home/aiida
+# make ssh dir and create host entry for bitbucket.org
+RUN mkdir $HOME/.ssh/ && \
+    touch $HOME/.ssh/known_hosts
+
+# verdi auto-complete to bashrc
+RUN echo "export PATH=$HOME/.local/bin:"'$PATH' >> $HOME/.bashrc && \
+    echo 'eval "$(verdi completioncommand)"' >> $HOME/.bashrc 
+
+# Install AiiDA
+WORKDIR /home/aiida/code/aiida_core
+RUN pip install --user -U .[verdi_shell,ssh,REST] \
+      --process-dependency-links 
+
+# TODO: Before adding the next line, remove at least sqlite from the optional 
+# requirements
+# RUN pip install --user -r optional_requirements.txt
+
+# TODO: prepare services to be started
+
+# Important to end as user root!
+USER root
