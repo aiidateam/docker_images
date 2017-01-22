@@ -30,3 +30,6 @@ Beside the typical basic ubuntu system, and a SSH server, it contains:
 - the torque scheduler (you can e.g. submit with the `qsub` command),
   see the files in the folder submission_test for some examples
 
+# Dockerfile repository
+
+`https://github.com/aiidateam/aiida_docker_images`, folder `services/torquessh`.
