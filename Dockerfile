@@ -63,20 +63,12 @@ WORKDIR /home/aiida
 RUN mkdir $HOME/.ssh/ && \
     touch $HOME/.ssh/known_hosts
 
-# verdi auto-complete to bashrc
-RUN echo "export PATH=$HOME/.local/bin:"'$PATH' >> $HOME/.bashrc && \
-    echo 'eval "$(verdi completioncommand)"' >> $HOME/.bashrc 
+# verdi auto-complete to bashrc - currently disabled
+#RUN echo 'eval "$(verdi completioncommand)"' >> $HOME/.bashrc 
 
 # Install AiiDA
 WORKDIR /home/aiida/code/aiida_core
-RUN pip install --user -U .[verdi_shell,ssh,REST] \
-      --process-dependency-links 
-
-# TODO: Before adding the next line, remove at least sqlite from the optional 
-# requirements
-# RUN pip install --user -r optional_requirements.txt
-
-# TODO: prepare services to be started
+RUN pip install --user -U pip wheel setuptools && pip install --user .
 
 # Important to end as user root!
 USER root
