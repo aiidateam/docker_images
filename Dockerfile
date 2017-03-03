@@ -48,7 +48,9 @@ WORKDIR /home/aiida/code
 ## Get the 'develop' branch with git
 RUN git clone https://github.com/aiidateam/aiida_core.git && \
     cd aiida_core && \
-    git checkout develop && \
+    # git checkout develop && \
+    # I commit a specific tag/commit
+    git checkout 7b3b3c3 && \
     cd ..
 
 ## Alternatively, use wget
@@ -68,7 +70,7 @@ RUN mkdir $HOME/.ssh/ && \
 
 # Install AiiDA
 WORKDIR /home/aiida/code/aiida_core
-RUN pip install --user -U pip wheel setuptools && pip install --user .
+RUN pip install --user -U pip wheel setuptools && pip install --user -e .
 
 # Important to end as user root!
 USER root
