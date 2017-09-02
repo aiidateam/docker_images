@@ -48,7 +48,7 @@ WORKDIR /home/aiida/code
 ## Get the 'develop' branch with git
 RUN git clone https://github.com/aiidateam/aiida_core.git && \
     cd aiida_core && \
-     git checkout v0.9.0 && \
+     git checkout v0.9.1 && \
     cd ..
 
 ## Alternatively, use wget
