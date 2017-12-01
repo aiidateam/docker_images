@@ -1,4 +1,4 @@
-FROM phusion/baseimage:0.9.19
+FROM phusion/baseimage:0.9.22
 MAINTAINER AiiDA Team <info@aiida.net>
 
 # Set correct environment variables.
@@ -48,7 +48,7 @@ WORKDIR /home/aiida/code
 ## Get the 'develop' branch with git
 RUN git clone https://github.com/aiidateam/aiida_core.git && \
     cd aiida_core && \
-     git checkout v0.9.1 && \
+     git checkout v0.10.0 && \
     cd ..
 
 ## Alternatively, use wget
