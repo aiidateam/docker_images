@@ -45,10 +45,10 @@ ENV HOME /home/aiida
 RUN mkdir -p $HOME/code/
 WORKDIR /home/aiida/code
 
-## Get the 'develop' branch with git
+## Get latest release from git
 RUN git clone https://github.com/aiidateam/aiida_core.git && \
     cd aiida_core && \
-     git checkout v0.10.0 && \
+     git checkout v0.11.0 && \
     cd ..
 
 ## Alternatively, use wget
