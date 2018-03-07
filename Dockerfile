@@ -66,6 +66,10 @@ RUN mkdir $HOME/.ssh/ && \
 # verdi auto-complete to bashrc - currently disabled
 #RUN echo 'eval "$(verdi completioncommand)"' >> $HOME/.bashrc 
 
+# Add the bin folder to the path (e.g. for verdi) so that
+# it works also from non-login shells
+RUN echo 'export PATH=~/.local/bin:$PATH' >> $HOME/.bashrc
+
 # Install AiiDA
 WORKDIR /home/aiida/code/aiida_core
 RUN pip install --user -U pip wheel setuptools && pip install --user -e .
