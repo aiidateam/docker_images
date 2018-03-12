@@ -48,7 +48,7 @@ WORKDIR /home/aiida/code
 ## Get latest release from git
 RUN git clone https://github.com/aiidateam/aiida_core.git && \
     cd aiida_core && \
-     git checkout v0.11.0 && \
+     git checkout v0.11.1 && \
     cd ..
 
 ## Alternatively, use wget
