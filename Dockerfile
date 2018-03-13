@@ -45,10 +45,10 @@ ENV HOME /home/aiida
 RUN mkdir -p $HOME/code/
 WORKDIR /home/aiida/code
 
-## Get the 'develop' branch with git
+## Get latest release from git
 RUN git clone https://github.com/aiidateam/aiida_core.git && \
     cd aiida_core && \
-     git checkout v0.10.0 && \
+     git checkout v0.11.1 && \
     cd ..
 
 ## Alternatively, use wget
@@ -65,6 +65,10 @@ RUN mkdir $HOME/.ssh/ && \
 
 # verdi auto-complete to bashrc - currently disabled
 #RUN echo 'eval "$(verdi completioncommand)"' >> $HOME/.bashrc 
+
+# Add the bin folder to the path (e.g. for verdi) so that
+# it works also from non-login shells
+RUN echo 'export PATH=~/.local/bin:$PATH' >> $HOME/.bashrc
 
 # Install AiiDA
 WORKDIR /home/aiida/code/aiida_core
