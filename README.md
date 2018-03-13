@@ -1,15 +1,20 @@
-# AiiDA (aiida_core) base image
+# AiiDA (aiida_core) base docker image
 
-This image just installs the ``aiida_core`` code (and its dependencies)
-in a `aiida` account, located in `/home/aiida/code/aiida_core`, and
-sets up `PATH` (in ~/.bashrc) to point to verdi.
+This repository contains the Dockerfile for a basic installation of the [AiiDA](www.aiida.net) python framework.
 
-Note: it does not set up AiiDA (it requires a database, etc.). For this,
+The docker image contains
+ * minimal Ubuntu base image (phusion/baseimage)
+ * user `aiida`
+ * [aiida-core](https://github.com/aiidateam/aiida_core) source in `/home/aiida/code/aiida_core`
+ * aiida-core and its dependencies pip-installed
+ * `PATH` (in ~/.bashrc) points to verdi
+
+Note: It does **not** set up AiiDA (it requires a database, etc.). For this,
 look at extensions of this package or at the docker-compose files
 (e.g. in the [aiida_docker_compose repository](https://github.com/aiidateam/aiida_docker_compose)).
 
-The homepage of AiiDA is at www.aiida.net.
+# Dockerhub repository
 
-# Dockerfile repository
+The corresponding docker image is built automatically on Dockerhub:
 
-https://github.com/aiidateam/aiida_core_base-docker
+https://hub.docker.com/r/aiidateam/aiida_core_base/
