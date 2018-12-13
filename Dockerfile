@@ -13,10 +13,11 @@ CMD ["/sbin/my_init"]
 
 # install required software
 RUN apt-get update \
-    && apt-get -y install \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    mlocate \
     git \
     openssh-client \
-    postgresql-client-10 \
+    postgresql-10 \
     postgresql-server-dev-10 \
     python2.7 \
     && apt-get -y install \
@@ -24,7 +25,8 @@ RUN apt-get update \
     ipython \
     python2.7-dev \
     && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean all
+    && apt-get clean all \
+    && updatedb
 
 # update pip and setuptools, required for AiiDA
 RUN pip install -U pip setuptools
