@@ -1,4 +1,4 @@
-FROM phusion/baseimage:0.9.22
+FROM phusion/baseimage:0.11
 MAINTAINER AiiDA Team <info@aiida.net>
 
 # Set correct environment variables.
@@ -16,8 +16,8 @@ RUN apt-get update \
     && apt-get -y install \
     git \
     openssh-client \
-    postgresql-client-9.5 \
-    postgresql-server-dev-9.5 \
+    postgresql-client-10 \
+    postgresql-server-dev-10 \
     python2.7 \
     && apt-get -y install \
     python-pip \
@@ -48,7 +48,7 @@ WORKDIR /home/aiida/code
 ## Get latest release from git
 RUN git clone https://github.com/aiidateam/aiida_core.git && \
     cd aiida_core && \
-     git checkout v0.11.2 && \
+     git checkout v0.12.2 && \
     cd ..
 
 ## Alternatively, use wget
@@ -72,7 +72,7 @@ RUN echo 'export PATH=~/.local/bin:$PATH' >> $HOME/.bashrc
 
 # Install AiiDA
 WORKDIR /home/aiida/code/aiida_core
-RUN pip install --user -U pip wheel setuptools && pip install --user -e .
+RUN pip install -U pip wheel setuptools --user && pip install -e . --user --no-build-isolation
 
 # Important to end as user root!
 USER root
