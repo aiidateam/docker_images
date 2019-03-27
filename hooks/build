@@ -3,7 +3,7 @@ set -ex
 
 version="$DOCKER_TAG"
 
-if [ "$version" == latest ] ; then
+if [ "$version" == "latest-1.0" ] ; then
     version=develop
 elif [ "$VERSION" == stable ] ; then
     version=master
