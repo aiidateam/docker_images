@@ -69,5 +69,10 @@ WORKDIR /home/aiida/code/aiida_core
 RUN $HOME/.venv-py2/bin/pip install --no-cache-dir --no-build-isolation --editable .
 RUN $HOME/.venv-py3/bin/pip install --no-cache-dir --no-build-isolation --editable .
 
+COPY bashrc /home/aiida/.bashrc
+COPY bash_profile /home/aiida/.bash_profile
+
 # Important to end as user root!
 USER root
+RUN chown aiida:aiida /home/aiida/.bashrc
+RUN chown aiida:aiida /home/aiida/.bash_profile
