@@ -2,6 +2,22 @@
 
 This repository contains the Dockerfile for a basic installation of the [AiiDA](www.aiida.net) python framework.
 
+## Updating the image
+In order to update the AiiDA version, go to Docker file and change the following line:
+```
+FROM yakutovich/aiida-base:vX.Y.Z
+
+```
+You should adapt X.Y.Z numbers to the latest version of aiida-base docker container.
+Once this is done, run the following commands:
+
+```
+./build.sh # to build the new aiida-complete docker container locally
+./tag.sh # to specify the AiiDA version number as the image's tag
+./push.sh # to push the image tagged with the version number to the Docker Hub
+./push_latest.sh # to push the image tagged with 'latest' to the Docker Hub
+```
+
 The docker image contains
  * minimal Ubuntu base image (phusion/baseimage)
  * user `aiida`
