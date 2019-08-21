@@ -2,8 +2,8 @@
 
 set -x
 
-VERSION="$(grep 'yakutovich/aiida-base' Dockerfile | cut -d':' -f2)"
+VERSION="$(grep 'aiidateam/aiida-docker-base' Dockerfile | cut -d':' -f2)"
 
-docker tag yakutovich/aiida-complete:latest yakutovich/aiida-complete:${VERSION}
+docker tag aiidateam/aiida-docker-stack:latest aiidateam/aiida-docker-stack:${VERSION}
 
 #EOF

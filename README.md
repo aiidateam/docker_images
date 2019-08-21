@@ -1,36 +1,33 @@
-# AiiDA (aiida_core) base docker image
+# AiiDA docker stack
 
-This repository contains the Dockerfile for a basic installation of the [AiiDA](www.aiida.net) python framework.
+This repository is based on [AiiDA docker base](https://github.com/aiidateam/aiida-docker-base/) image, but adds
+[PostgreSQL](https://www.postgresql.org/) and [RabbitMQ](https://www.rabbitmq.com/) servers on top. Additionally, it performs
+initial AiiDA configuration allowing to have a ready-to-use AiiDA environment.
 
 ## Updating the image
-In order to update the AiiDA version, go to Docker file and change the following line:
+In order to update the AiiDA version you should update the version of the base image. Go to the Docker file and simply replace the following line:
 ```
-FROM yakutovich/aiida-base:vX.Y.Z
+FROM aiidateam/aiida-docker-base:vX.Y.Z
 
 ```
-You should adapt X.Y.Z numbers to the latest version of aiida-base docker container.
+You should adapt X.Y.Z numbers to the latest version of the [aiida-docker-base](https://hub.docker.com/r/aiidateam/aiida-docker-base) image.
 Once this is done, run the following commands:
 
 ```
-./build.sh # to build the new aiida-complete docker container locally
+./build.sh # to build the new aiida-docker-stack image locally and tag it as 'latest'
 ./tag.sh # to specify the AiiDA version number as the image's tag
 ./push.sh # to push the image tagged with the version number to the Docker Hub
 ./push_latest.sh # to push the image tagged with 'latest' to the Docker Hub
 ```
 
-The docker image contains
- * minimal Ubuntu base image (phusion/baseimage)
- * user `aiida`
- * [aiida-core](https://github.com/aiidateam/aiida_core) source in `/home/aiida/code/aiida_core`
- * aiida-core and its dependencies pip-installed
- * `PATH` (in ~/.bashrc) points to verdi
+The docker image contains:
+ * Minimal AiiDA base image (aiidateam/aiida-docker-base)
+ * [PostgreSQL](https://www.postgresql.org/)
+ * [RabbitMQ](https://www.rabbitmq.com/)
+ * Configured AiiDA environment for the `aiida` user
 
-Note: It does **not** set up AiiDA (it requires a database, etc.). For this,
-look at extensions of this package or at the docker-compose files
-(e.g. in the [aiida_docker_compose repository](https://github.com/aiidateam/aiida_docker_compose)).
+# Docker Hub repository
 
-# Dockerhub repository
+The corresponding docker image is built automatically on Docker Hub:
 
-The corresponding docker image is built automatically on Dockerhub:
-
-https://hub.docker.com/r/aiidateam/aiida_core_base/
+https://hub.docker.com/r/aiidateam/aiida-docker-stack

@@ -2,8 +2,8 @@
 
 set -x
 
-VERSION="$(grep 'yakutovich/aiida-base' Dockerfile | cut -d':' -f2)"
+VERSION="$(grep 'aiidateam/aiida-docker-base' Dockerfile | cut -d':' -f2)"
 
-docker push yakutovich/aiida-complete:${VERSION}
+docker push aiidateam/aiida-docker-stack:${VERSION}
 
 #EOF
