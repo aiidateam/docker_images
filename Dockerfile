@@ -1,73 +1,51 @@
-FROM phusion/baseimage:0.11
-MAINTAINER AiiDA Team <info@aiida.net>
+FROM aiidateam/aiida-docker-base:v1.0.0b5
+MAINTAINER AiiDA Team <developers@aiida.net>
 
-# Set correct environment variables.
-ENV HOME /root
+USER root
+
+# Install required ubuntu packages
+RUN apt-get update && apt-get install -y --no-install-recommends  \
+    bzip2                 \
+    git                   \
+    gir1.2-gtk-3.0        \
+    gnupg                 \
+    locales               \
+    less                  \
+    postgresql            \
+    psmisc                \
+    rabbitmq-server       \
+    rsync                 \
+    ssh                   \
+    unzip                 \
+    vim                   \
+    wget                  \
+    zip                   \
+  && rm -rf /var/lib/apt/lists/* \
+  && apt-get clean all
+
+# Fix locales
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+# Launch postgres server
+COPY opt/postgres.sh /opt/
+COPY my_init.d/start-postgres.sh /etc/my_init.d/20_start-postgres.sh
+
+# Launch start-singleuser
+COPY opt/start-singleuser.sh /opt/start-singleuser-complete.sh
+COPY my_init.d/start-singleuser.sh /etc/my_init.d/31_start-singleuser.sh
+
+# Launch rabbitmq server
+RUN mkdir /etc/service/rabbitmq
+COPY service/rabbitmq /etc/service/rabbitmq/run
+
+# Launch aiida daemon
+RUN mkdir /etc/service/aiida
+COPY service/aiida /etc/service/aiida/run
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
 
-# TODO: probably postgresql-server-dev-9.5 are needed only during
-# the pip install phase, so could be removed afterwards (and maybe
-# used in the same layer)
-
-# install required software
-#   python*-dev is pulled in by python*-pip
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y install \
-        mlocate \
-        git \
-        openssh-client \
-        postgresql-10 \
-        postgresql-server-dev-10 \
-        python2.7 \
-        python3.6 \
-        python-pip \
-        python3-pip \
-        virtualenv \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean all \
-    && updatedb
-
-# update build-tools
-# restrict pip version to below 19, until
-#   https://github.com/aiidateam/aiida_core/pull/2640
-RUN pip install -U 'pip<19' setuptools wheel
-RUN pip3 install -U 'pip<19' setuptools wheel
-
-# add USER (no password)
-RUN useradd -m -s /bin/bash aiida
-
-##########################################
-############ Installation Setup ##########
-##########################################
-
-# install rest of the packages as normal user
-USER aiida
-
-# set $HOME, create git directory
-ENV HOME /home/aiida
-
-# make ssh dir and create host entry for bitbucket.org
-RUN mkdir --mode=0700 $HOME/.ssh/ && \
-    touch $HOME/.ssh/known_hosts
-
-# Install AiiDA
-RUN mkdir -p $HOME/code/
-
-## Prepare the virtual environments for Python 2 and 3
-RUN virtualenv --python=python3 $HOME/.venv-py3
-RUN virtualenv --python=python2 $HOME/.venv-py2
-
-## Specify build-arg here to cache layers above
-ARG AIIDA_VERSION=develop
-
-## Get latest release from git
-RUN git clone --branch $AIIDA_VERSION https://github.com/aiidateam/aiida_core.git /home/aiida/code/aiida_core
-
-WORKDIR /home/aiida/code/aiida_core
-RUN $HOME/.venv-py2/bin/pip install --no-cache-dir --no-build-isolation --editable .
-RUN $HOME/.venv-py3/bin/pip install --no-cache-dir --no-build-isolation --editable .
-
-# Important to end as user root!
-USER root
+#EOF
