@@ -1,80 +1,51 @@
-FROM phusion/baseimage:0.11
-MAINTAINER AiiDA Team <info@aiida.net>
+FROM aiidateam/aiida-docker-base:v1.0.0b5
+MAINTAINER AiiDA Team <developers@aiida.net>
 
-# Set correct environment variables.
-ENV HOME /root
+USER root
+
+# Install required ubuntu packages
+RUN apt-get update && apt-get install -y --no-install-recommends  \
+    bzip2                 \
+    git                   \
+    gir1.2-gtk-3.0        \
+    gnupg                 \
+    locales               \
+    less                  \
+    postgresql            \
+    psmisc                \
+    rabbitmq-server       \
+    rsync                 \
+    ssh                   \
+    unzip                 \
+    vim                   \
+    wget                  \
+    zip                   \
+  && rm -rf /var/lib/apt/lists/* \
+  && apt-get clean all
+
+# Fix locales
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+# Launch postgres server
+COPY opt/postgres.sh /opt/
+COPY my_init.d/start-postgres.sh /etc/my_init.d/20_start-postgres.sh
+
+# Launch start-singleuser
+COPY opt/start-singleuser.sh /opt/start-singleuser-complete.sh
+COPY my_init.d/start-singleuser.sh /etc/my_init.d/31_start-singleuser.sh
+
+# Launch rabbitmq server
+RUN mkdir /etc/service/rabbitmq
+COPY service/rabbitmq /etc/service/rabbitmq/run
+
+# Launch aiida daemon
+RUN mkdir /etc/service/aiida
+COPY service/aiida /etc/service/aiida/run
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
 
-# TODO: probably postgresql-server-dev-9.5 are needed only during
-# the pip install phase, so could be removed afterwards (and maybe
-# used in the same layer)
-
-# install required software
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y install \
-    mlocate \
-    git \
-    openssh-client \
-    postgresql-10 \
-    postgresql-server-dev-10 \
-    python2.7 \
-    && apt-get -y install \
-    python-pip \
-    ipython \
-    python2.7-dev \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean all \
-    && updatedb
-
-# update pip and setuptools, required for AiiDA
-RUN pip install -U pip setuptools
-
-# add USER (no password)
-RUN useradd -m -s /bin/bash aiida
-
-##########################################
-############ Installation Setup ##########
-##########################################
-
-# install rest of the packages as normal user
-USER aiida
-
-# set $HOME, create git directory
-ENV HOME /home/aiida
-
-RUN mkdir -p $HOME/code/
-WORKDIR /home/aiida/code
-
-## Get latest release from git
-RUN git clone https://github.com/aiidateam/aiida_core.git && \
-    cd aiida_core && \
-     git checkout v0.12.2 && \
-    cd ..
-
-## Alternatively, use wget
-#RUN wget --no-check-certificate -q \
-#      https://github.com/aiidateam/aiida_core/archive/develop.tar.gz && \
-#    tar xzf develop.tar.gz && \
-#    rm develop.tar.gz && \
-#    mv aiida_core-develop aiida_core
-
-WORKDIR /home/aiida
-# make ssh dir and create host entry for bitbucket.org
-RUN mkdir $HOME/.ssh/ && \
-    touch $HOME/.ssh/known_hosts
-
-# verdi auto-complete to bashrc - currently disabled
-#RUN echo 'eval "$(verdi completioncommand)"' >> $HOME/.bashrc 
-
-# Add the bin folder to the path (e.g. for verdi) so that
-# it works also from non-login shells
-RUN echo 'export PATH=~/.local/bin:$PATH' >> $HOME/.bashrc
-
-# Install AiiDA
-WORKDIR /home/aiida/code/aiida_core
-RUN pip install -U pip wheel setuptools --user && pip install -e . --user --no-build-isolation
-
-# Important to end as user root!
-USER root
+#EOF
