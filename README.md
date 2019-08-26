@@ -1,24 +1,17 @@
 # AiiDA docker stack
 
 This repository is based on [AiiDA docker base](https://github.com/aiidateam/aiida-docker-base/) image, but adds
-[PostgreSQL](https://www.postgresql.org/) and [RabbitMQ](https://www.rabbitmq.com/) servers on top. Additionally, it performs
-initial AiiDA configuration allowing to have a ready-to-use AiiDA environment.
+[PostgreSQL](https://www.postgresql.org/) and [RabbitMQ](https://www.rabbitmq.com/) servers on top. Additionally, it creates an AiiDA profile in order to have a ready-to-use AiiDA environment.
 
 ## Updating the image
-In order to update the AiiDA version you should update the version of the base image. Go to the Docker file and simply replace the following line:
+In order to update the AiiDA version, first update the [`aiida-docker-base`](https://hub.docker.com/r/aiidateam/aiida-docker-base) and then use the updated tag of the image in the `Dockerfile`:
 ```
 FROM aiidateam/aiida-docker-base:vX.Y.Z
 
 ```
-You should adapt X.Y.Z numbers to the latest version of the [aiida-docker-base](https://hub.docker.com/r/aiidateam/aiida-docker-base) image.
-Once this is done, run the following commands:
+You need to adapt X.Y.Z numbers to the latest version of the [aiida-docker-base](https://hub.docker.com/r/aiidateam/aiida-docker-base) image.
 
-```
-./build.sh # to build the new aiida-docker-stack image locally and tag it as 'latest'
-./tag.sh # to specify the AiiDA version number as the image's tag
-./push.sh # to push the image tagged with the version number to the Docker Hub
-./push_latest.sh # to push the image tagged with 'latest' to the Docker Hub
-```
+## Docker image
 
 The docker image contains:
  * Minimal AiiDA base image (aiidateam/aiida-docker-base)
@@ -28,9 +21,11 @@ The docker image contains:
 
 # Docker Hub repository
 
-The corresponding docker image is built automatically on Docker Hub:
+The docker image is built automatically on Docker Hub once new changes are pushed to the `master` or `develop` branches of this repository.
+The `master` branch is available under the docker tag `latest`, while the `develop` branch is available under the docker tag `develop`.
+In addition, any git tag pushed to the repository will trigger a build on Docker Hub with the same docker tag.
 
-https://hub.docker.com/r/aiidateam/aiida-docker-stack
+All the images are available following this link: https://hub.docker.com/r/aiidateam/aiida-docker-stack
 
 
 # Acknowledgements

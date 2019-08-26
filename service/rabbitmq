@@ -1,5 +1,4 @@
 #!/bin/bash
 set -em
 
-
-/usr/sbin/rabbitmq-server # -detached
+/usr/sbin/rabbitmq-server
