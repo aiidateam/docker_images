@@ -41,24 +41,9 @@ RUN useradd -m -s /bin/bash aiida
 # install rest of the packages as normal user
 USER aiida
 
-# set $HOME, create git directory
+# set $HOME, create directory
 ENV HOME /home/aiida
-
-RUN mkdir -p $HOME/code/
-WORKDIR /home/aiida/code
-
-## Get latest release from git
-RUN git clone https://github.com/aiidateam/aiida_core.git && \
-    cd aiida_core && \
-     git checkout v0.12.2 && \
-    cd ..
-
-## Alternatively, use wget
-#RUN wget --no-check-certificate -q \
-#      https://github.com/aiidateam/aiida_core/archive/develop.tar.gz && \
-#    tar xzf develop.tar.gz && \
-#    rm develop.tar.gz && \
-#    mv aiida_core-develop aiida_core
+RUN mkdir -p $HOME
 
 WORKDIR /home/aiida
 # make ssh dir and create host entry for bitbucket.org
@@ -73,8 +58,10 @@ RUN mkdir $HOME/.ssh/ && \
 RUN echo 'export PATH=~/.local/bin:$PATH' >> $HOME/.bashrc
 
 # Install AiiDA
-WORKDIR /home/aiida/code/aiida_core
-RUN pip install -U pip wheel setuptools --user && pip install -e . --user --no-build-isolation
+RUN pip install --upgrade pip setuptools --user
+RUN pip install numpy==1.15.4 --user
+RUN pip install pymatgen==2018.12.12 --no-binary pymatgen --user
+RUN pip install aiida-core['rest','atomic_tools']==0.12.4 --user --no-build-isolation
 
 # Important to end as user root!
 USER root
