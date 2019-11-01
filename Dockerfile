@@ -1,4 +1,4 @@
-FROM aiidateam/aiida-docker-base:v1.0.0b5
+FROM aiidateam/aiida-docker-base:v1.0.0
 MAINTAINER AiiDA Team <developers@aiida.net>
 
 USER root
