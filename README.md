@@ -4,7 +4,7 @@ are the useful links:
 
  * Docker Hub link: https://hub.docker.com/r/aiidateam/aiida-core
  * Link to the Docker file: https://github.com/aiidateam/aiida-core/blob/develop/Dockerfile
- * List of other container that are currently maintained: https://github.com/aiidateam/aiida-core/wiki/AiiDA-containers
+ * List of other containers that are currently maintained: https://github.com/aiidateam/aiida-core/wiki/AiiDA-containers
 
 # AiiDA docker stack
 
