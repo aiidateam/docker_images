@@ -1,3 +1,11 @@
+# DEPRECATED
+Consider to use aiidateam/aiida-core image shipped along with the aiida-core repository. Here
+are the useful links:
+
+ * Docker Hub link: https://hub.docker.com/r/aiidateam/aiida-core
+ * Link to the Docker file: https://github.com/aiidateam/aiida-core/blob/develop/Dockerfile
+ * List of other containers that are currently maintained: https://github.com/aiidateam/aiida-core/wiki/AiiDA-containers
+
 # AiiDA docker stack
 
 This repository is based on [AiiDA docker base](https://github.com/aiidateam/aiida-docker-base/) image, but adds
